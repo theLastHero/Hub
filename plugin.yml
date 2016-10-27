@@ -1,0 +1,7 @@
+name: Hub
+version: 1.0
+description: Hub
+author: theLastHero
+authors: [theLastHero] 
+website: http://ackeron.com
+main: com.ackeron.hub.Hub
