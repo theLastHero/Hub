@@ -13,6 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -22,6 +23,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.util.Vector;
 
 import com.ackeron.hub.Hub;
@@ -32,6 +34,8 @@ public class PlayerListener implements Listener {
 
 	public static ItemStack slimeball;
 	public static ItemStack magnacream;
+	public static ItemStack goldnugget;
+	public static ItemStack playerHead;
 
 	// drop item cancel event
 	@EventHandler
@@ -109,6 +113,13 @@ public class PlayerListener implements Listener {
 				showInv(p);
 				return;
 			}
+			
+			// SLOT 1
+			if (p.getItemInHand().getType() == Material.GOLD_NUGGET) {
+				e.setCancelled(true);
+				showTokenInv(p);
+				return;
+			}
 		}
 
 	}
@@ -143,20 +154,36 @@ public class PlayerListener implements Listener {
 
 		ItemStack slot0 = buildItemStack(new ItemStack(Material.ENDER_PEARL),
 				ChatColor.AQUA.toString() + "Navigator " + ChatColor.GRAY.toString() + "(Right Click)",
-				ChatColor.WHITE.toString() + "Right Click to open server selector");
+				ChatColor.WHITE.toString() + "Right Click to open server selector!");
 		p.getInventory().setItem(0, slot0);
 
 		slimeball = buildItemStack(
 				new ItemStack(Material.SLIME_BALL), ChatColor.AQUA.toString() + "Players: " + ChatColor.GREEN.toString()
 						+ "ON " + ChatColor.GRAY.toString() + "(Right Click)",
-				ChatColor.WHITE.toString() + "Right click to toggle player visibilty");
+				ChatColor.WHITE.toString() + "Right click to toggle player visibilty!");
 		p.getInventory().setItem(8, slimeball);
 
 		magnacream = buildItemStack(new ItemStack(Material.MAGMA_CREAM),
 				ChatColor.AQUA.toString() + "Players: " + ChatColor.GREEN.toString() + "OFF "
 						+ ChatColor.GRAY.toString() + "(Right Click)",
-				ChatColor.WHITE.toString() + "Right click to toggle player visibilty");
+				ChatColor.WHITE.toString() + "Right click to toggle player visibilty!");
 		p.getInventory().setItem(8, slimeball);
+		
+		goldnugget = buildItemStack(new ItemStack(Material.GOLD_NUGGET),
+				ChatColor.GOLD.toString() + "Token Shop "
+						+ ChatColor.GRAY.toString() + "(Right Click)",
+				ChatColor.WHITE.toString() + "Right click to open token shop!");
+		p.getInventory().setItem(4, goldnugget);
+		
+		playerHead = buildItemStack(new ItemStack(Material.SKULL_ITEM, 1, (short) 3),
+				ChatColor.GOLD.toString() + "Player Profile "
+						+ ChatColor.GRAY.toString() + "(Right Click)",
+				ChatColor.WHITE.toString() + "Right click to view your profile!");
+		SkullMeta Meta_Skull = (SkullMeta) playerHead.getItemMeta();
+		Meta_Skull.setOwner(p.getName());
+		
+		
+		p.getInventory().setItem(1, playerHead);
 
 	}
 
@@ -185,6 +212,12 @@ public class PlayerListener implements Listener {
 		toEnchant.setItemMeta(toEnchantMeta);
 		return toEnchant;
 	}
+	
+	@EventHandler
+	public void onFoodLevelChange(FoodLevelChangeEvent event)
+	{
+	event.setFoodLevel(20);
+	}
 
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent e) {
@@ -196,6 +229,116 @@ public class PlayerListener implements Listener {
 		if (e.getCurrentItem().getType() == Material.DIAMOND_SWORD) {
 			sentToServer(p, "survival");
 		}
+		if (e.getCurrentItem().getType() == Material.GRASS) {
+			sentToServer(p, "skyblock");
+		}
+		if (e.getCurrentItem().getType() == Material.IRON_HELMET) {
+			sentToServer(p, "kit");
+		}
+	}
+	
+	public void showTokenInv(Player p) {
+		Inventory inv = Bukkit.createInventory(null, 54, ChatColor.DARK_AQUA + "Token Shop");
+		
+		//PARTICLES!
+		ItemStack tokenItem0 = new ItemStack(Material.GOLD_NUGGET);
+		ItemMeta tokenItem0Meta = tokenItem0.getItemMeta();
+		tokenItem0Meta.setDisplayName(ChatColor.AQUA.toString() + "Your Tokens");
+		//
+		ArrayList<String> lore = new ArrayList<String>();
+		lore.add("");
+		lore.add(ChatColor.GRAY.toString() + "You have " + ChatColor.GREEN + "0" +ChatColor.GRAY + " tokens.");
+		lore.add("");
+		lore.add(ChatColor.YELLOW.toString() + "Tokens drop randomally on every server.");
+		lore.add(ChatColor.YELLOW.toString() + "Grab them by mining, killing or just walking around!");
+		lore.add("");
+		
+		tokenItem0Meta.setLore(lore);
+		tokenItem0Meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+		tokenItem0.setItemMeta(tokenItem0Meta);
+		inv.setItem(4, tokenItem0);
+
+		//PARTICLES!
+		lore.clear();
+		ItemStack tokenItem1 = new ItemStack(Material.FIREBALL);
+		ItemMeta tokenItem1Meta = tokenItem1.getItemMeta();
+		tokenItem1Meta.setDisplayName(ChatColor.AQUA.toString() + "Particles");
+		//
+		lore.add("");
+		lore.add(ChatColor.GRAY.toString() + "Buy particle effects to");
+		lore.add(ChatColor.GRAY.toString() + "show off to your friends!");
+		lore.add("");
+		lore.add(ChatColor.YELLOW.toString() + "Applys to all servers and lasts forever!");
+		lore.add("");
+		lore.add(ChatColor.GRAY + "Access with " + ChatColor.AQUA + "/particles");
+
+		tokenItem1Meta.setLore(lore);
+		tokenItem1Meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+		tokenItem1.setItemMeta(tokenItem1Meta);
+		inv.setItem(19, tokenItem1);
+		
+		//TITLES
+		ItemStack tokenItem2 = new ItemStack(Material.NAME_TAG);
+		ItemMeta tokenItem2Meta = tokenItem2.getItemMeta();
+		tokenItem2Meta.setDisplayName(ChatColor.AQUA.toString() +  "Titles");
+		//
+		lore.clear();
+		lore.add("");
+		lore.add(ChatColor.GRAY.toString() + "Unlock prefixes in front");
+		lore.add(ChatColor.GRAY.toString() + "of your name!");
+		lore.add("");
+		lore.add(ChatColor.YELLOW.toString() + "Applys to all servers and lasts forever!");
+		lore.add("");
+		lore.add(ChatColor.GRAY + "Access with " + ChatColor.AQUA + "/titles");
+
+		tokenItem2Meta.setLore(lore);
+		tokenItem2Meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+		tokenItem2.setItemMeta(tokenItem2Meta);
+
+		inv.setItem(21, tokenItem2);
+		
+		//PETS
+		ItemStack tokenItem3 = new ItemStack(Material.EGG);
+		ItemMeta tokenItem3Meta = tokenItem3.getItemMeta();
+		tokenItem3Meta.setDisplayName(ChatColor.AQUA.toString()  + "Pets");
+		//
+		lore.clear();
+		lore.add("");
+		lore.add(ChatColor.GRAY.toString() + "Unlock a new sidekick or");
+		lore.add(ChatColor.GRAY.toString() + "best friend by your side!");
+		lore.add("");
+		lore.add(ChatColor.YELLOW.toString() + "Applys to all servers and lasts forever!");
+		lore.add("");
+		lore.add(ChatColor.GRAY + "Access with " + ChatColor.AQUA + "/pets");
+
+		tokenItem3Meta.setLore(lore);
+		tokenItem3Meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+		tokenItem3.setItemMeta(tokenItem3Meta);
+
+		inv.setItem(23, tokenItem3);
+		
+		//PDISGUISES
+		ItemStack tokenItem4 = new ItemStack(Material.MONSTER_EGG);
+		ItemMeta tokenItem4Meta = tokenItem4.getItemMeta();
+		tokenItem4Meta.setDisplayName(ChatColor.AQUA.toString()  + "Disguises");
+		//
+		lore.clear();
+		lore.add("");
+		lore.add(ChatColor.GRAY.toString() + "Disguise yourself as a");
+		lore.add(ChatColor.GRAY.toString() + "animal, mob or player!");
+		lore.add("");
+		lore.add(ChatColor.YELLOW.toString() + "Applys to all servers and lasts forever!");
+		lore.add("");
+		lore.add(ChatColor.GRAY + "Access with " + ChatColor.AQUA + "/disguises");
+
+		tokenItem4Meta.setLore(lore);
+		tokenItem4Meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+		tokenItem4.setItemMeta(tokenItem4Meta);
+
+		inv.setItem(25, tokenItem4);
+		
+		p.openInventory(inv);
+		
 	}
 
 	public void showInv(Player p) {

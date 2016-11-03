@@ -6,11 +6,14 @@ import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarFlag;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
@@ -19,6 +22,7 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 
 import listeners.PlayerListener;
+import ru.beykerykt.lightapi.LightAPI;
 
 public class Hub extends JavaPlugin implements PluginMessageListener {
 
@@ -36,6 +40,7 @@ public class Hub extends JavaPlugin implements PluginMessageListener {
 	@Override
 	public void onEnable() {
 
+
 		// registers
 		Bukkit.getServer().getPluginManager().registerEvents(new PlayerListener(), this);
 		this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
@@ -50,7 +55,19 @@ public class Hub extends JavaPlugin implements PluginMessageListener {
 
 		startCountdown();
 
+		
+		//updateHologram();
+		
+		
+
 	}
+	
+	public void updateHologram() {
+
+	
+
+	}
+	
 
 	public static void setBossBar() {
 
@@ -106,8 +123,9 @@ public class Hub extends JavaPlugin implements PluginMessageListener {
 			public void run() {
 
 				setBossBar();
+				//LightAPI.createLight(Bukkit.getWorld("SUBHUB"), 525, 39, 642, 32, true);
 
-				Bukkit.getWorld("SUBHUB").setTime(2000);
+				Bukkit.getWorld("SUBHUB").setTime(18000);
 				Bukkit.getWorld("SUBHUB").setStorm(false);
 				Bukkit.getWorld("SUBHUB").setThundering(false);
 
